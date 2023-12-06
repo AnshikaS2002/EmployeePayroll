@@ -1,3 +1,5 @@
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -18,7 +20,8 @@ public class EmployeePayrollService {
         EmployeePayrollService employeePayrollService = new EmployeePayrollService(employeePayrollList);
         Scanner consoleInputReader = new Scanner(System.in);
         employeePayrollService.readEmployeePayrollData(consoleInputReader);
-        employeePayrollService.writeEmployeePayrollData();
+        employeePayrollService.writeEmployeePayrollDataToFile();
+        employeePayrollService.countEntries();
     }
 
     private void readEmployeePayrollData(Scanner consoleInputReader) {
@@ -31,7 +34,18 @@ public class EmployeePayrollService {
         employeePayrollList.add(new EmployeePayrollData(id, name, salary));
     }
 
-    private void writeEmployeePayrollData() {
-        System.out.println("Writing Payroll Data to Console" + employeePayrollList.toString());
+    private void writeEmployeePayrollDataToFile() {
+        try (FileWriter writer = new FileWriter("employee_payroll.txt")) {
+            for (EmployeePayrollData employee : employeePayrollList) {
+                writer.write(employee.toString() + "\n");
+            }
+            System.out.println("Employee payroll data written to file successfully.");
+        } catch (IOException e) {
+            System.err.println("Error writing to file: " + e.getMessage());
+        }
+    }
+
+    private void countEntries() {
+        System.out.println("Number of entries: " + employeePayrollList.size());
     }
 }
