@@ -1,3 +1,5 @@
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -22,6 +24,7 @@ public class EmployeePayrollService {
         employeePayrollService.readEmployeePayrollData(consoleInputReader);
         employeePayrollService.writeEmployeePayrollDataToFile();
         employeePayrollService.countEntries();
+        employeePayrollService.printEmployeePayrollsFromFile();
     }
 
     private void readEmployeePayrollData(Scanner consoleInputReader) {
@@ -35,17 +38,31 @@ public class EmployeePayrollService {
     }
 
     private void writeEmployeePayrollDataToFile() {
-        try (FileWriter writer = new FileWriter("employee_payroll.txt")) {
+        try (FileWriter writer = new FileWriter("employee_payroll.txt", true)) {
             for (EmployeePayrollData employee : employeePayrollList) {
                 writer.write(employee.toString() + "\n");
             }
-            System.out.println("Employee payroll data written to file successfully.");
+            System.out.println("Employee payroll data appended to file successfully.");
         } catch (IOException e) {
             System.err.println("Error writing to file: " + e.getMessage());
         }
     }
 
+    private void printEmployeePayrollsFromFile() {
+        try (BufferedReader reader = new BufferedReader(new FileReader("employee_payroll.txt"))) {
+            System.out.println("Employee Payroll Data from File:");
+            reader.lines().forEach(System.out::println);
+        } catch (IOException e) {
+            System.err.println("Error reading from file: " + e.getMessage());
+        }
+    }
+
     private void countEntries() {
-        System.out.println("Number of entries: " + employeePayrollList.size());
+        try (BufferedReader reader = new BufferedReader(new FileReader("employee_payroll.txt"))) {
+            long count = reader.lines().count();
+            System.out.println("Number of entries: " + count);
+        } catch (IOException e) {
+            System.err.println("Error counting entries: " + e.getMessage());
+        }
     }
 }
